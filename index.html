@@ -110,7 +110,6 @@
       text-shadow: 0 1px 0 white;
     }
 
-    /* Article page overlay */
     .overlay {
       position: fixed;
       top: 0;
@@ -136,6 +135,19 @@
       padding: 10px;
       opacity: 0.7;
     }
+
+    #musicToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      border-radius: 20px;
+      background: #1e90ff;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
@@ -143,7 +155,7 @@
 <!-- Audio -->
 <audio id="publishSound" src="publish.mp3"></audio>
 <audio id="openSound" src="open.mp3"></audio>
-<audio id="bgMusic" src="music.mp3" loop autoplay></audio>
+<audio id="bgMusic" src="music.mp3" loop></audio>
 
 <header>
   <div class="logo">
@@ -154,7 +166,6 @@
 </header>
 
 <div class="container">
-
   <div class="card">
     <h2>🌐 Welcome to Localpedia</h2>
     <p>A funky, glossy, Frutiger Aero-style local wiki where you can explore and create articles about your surroundings ✨</p>
@@ -173,10 +184,8 @@
       <div id="articles"></div>
     </div>
   </div>
-
 </div>
 
-<!-- Article Overlay -->
 <div class="overlay" id="overlay" onclick="closeOverlay()">
   <div class="overlay-content card" onclick="event.stopPropagation()">
     <h2 id="overlayTitle"></h2>
@@ -189,8 +198,23 @@
   Find the Chomiks OST - Chomco OS
 </footer>
 
+<div id="musicToggle" onclick="toggleMusic()">Unmute Music</div>
+
 <script>
   let articles = JSON.parse(localStorage.getItem("localpedia_articles")) || [];
+  let musicPlaying = false;
+  const bgMusic = document.getElementById("bgMusic");
+
+  function toggleMusic() {
+    if (musicPlaying) {
+      bgMusic.pause();
+      document.getElementById("musicToggle").innerText = "Unmute Music";
+    } else {
+      bgMusic.play();
+      document.getElementById("musicToggle").innerText = "Mute Music";
+    }
+    musicPlaying = !musicPlaying;
+  }
 
   function saveArticles() {
     localStorage.setItem("localpedia_articles", JSON.stringify(articles));
@@ -199,12 +223,10 @@
   function addArticle() {
     const title = document.getElementById("title").value;
     const content = document.getElementById("content").value;
-
     if (!title || !content) return;
 
     articles.push({ title, content });
     saveArticles();
-
     document.getElementById("publishSound").play();
 
     document.getElementById("title").value = "";
@@ -216,11 +238,10 @@
   function renderArticles(filtered = articles) {
     const container = document.getElementById("articles");
     container.innerHTML = "";
-
     filtered.forEach(article => {
       const div = document.createElement("div");
       div.className = "card";
-      div.innerHTML = `<h3 onclick="openArticle('${article.title}','${article.content}')" style="cursor:pointer">${article.title}</h3><p>${article.content.substring(0,50)}...</p>`;
+      div.innerHTML = `<h3 onclick="openArticle('${article.title}','${article.content}')" style='cursor:pointer'>${article.title}</h3><p>${article.content.substring(0,50)}...</p>`;
       container.appendChild(div);
     });
   }
@@ -229,7 +250,6 @@
     document.getElementById("overlayTitle").innerText = title;
     document.getElementById("overlayContent").innerText = content;
     document.getElementById("overlay").style.display = "flex";
-
     document.getElementById("openSound").play();
   }
 
@@ -250,12 +270,10 @@
     bubble.style.width = bubble.style.height = 20 + Math.random() * 60 + "px";
     bubble.style.animationDuration = 5 + Math.random() * 10 + "s";
     document.body.appendChild(bubble);
-
     setTimeout(() => bubble.remove(), 15000);
   }
 
   setInterval(createBubble, 500);
-
   renderArticles();
 </script>
 
