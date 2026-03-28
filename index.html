@@ -136,10 +136,8 @@
       opacity: 0.7;
     }
 
-    #musicToggle {
+    #musicToggle, #bubblesToggle {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
       padding: 10px 15px;
       border-radius: 20px;
       background: #1e90ff;
@@ -148,6 +146,9 @@
       font-weight: bold;
       z-index: 1000;
     }
+
+    #musicToggle { left: 20px; bottom: 20px; }
+    #bubblesToggle { right: 20px; bottom: 20px; }
   </style>
 </head>
 <body>
@@ -195,14 +196,16 @@
 </div>
 
 <footer>
-  Find the Chomiks OST - Chomco OS
+  Find the Chomiks OST - ChomcoOS
 </footer>
 
 <div id="musicToggle" onclick="toggleMusic()">Unmute Music</div>
+<div id="bubblesToggle" onclick="toggleBubbles()">Disable Bubbles</div>
 
 <script>
   let articles = JSON.parse(localStorage.getItem("localpedia_articles")) || [];
   let musicPlaying = false;
+  let bubblesEnabled = true;
   const bgMusic = document.getElementById("bgMusic");
 
   function toggleMusic() {
@@ -214,6 +217,14 @@
       document.getElementById("musicToggle").innerText = "Mute Music";
     }
     musicPlaying = !musicPlaying;
+  }
+
+  function toggleBubbles() {
+    bubblesEnabled = !bubblesEnabled;
+    if (!bubblesEnabled) {
+      document.querySelectorAll('.bubble').forEach(b => b.remove());
+    }
+    document.getElementById("bubblesToggle").innerText = bubblesEnabled ? "Disable Bubbles" : "Enable Bubbles";
   }
 
   function saveArticles() {
@@ -264,6 +275,7 @@
   }
 
   function createBubble() {
+    if (!bubblesEnabled) return;
     const bubble = document.createElement("div");
     bubble.className = "bubble";
     bubble.style.left = Math.random() * 100 + "vw";
