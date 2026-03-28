@@ -124,17 +124,26 @@
       height: 100%;
       background: rgba(0,0,0,0.5);
       display: none;
-      justify-content: center;
-      align-items: center;
+      justify-content: flex-start;
+      align-items: flex-start;
       z-index: 999;
       overflow-y: auto;
+      padding-top: 40px;
+      padding-bottom: 40px;
     }
 
     .overlay-content {
       width: 80%;
-      max-width: 700px;
-      max-height: 90vh;
-      overflow-y: auto;
+      max-width: 800px;
+      background: linear-gradient(to bottom, #ffffff, #dff6ff);
+      border-radius: 16px;
+      padding: 30px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
     }
 
     footer {
@@ -197,15 +206,15 @@
 </div>
 
 <div class="overlay" id="overlay" onclick="closeOverlay()">
-  <div class="overlay-content card" onclick="event.stopPropagation()">
+  <div class="overlay-content" onclick="event.stopPropagation()">
     <h2 id="overlayTitle"></h2>
-    <p id="overlayContent"></p>
+    <div id="overlayContent"></div>
     <button onclick="closeOverlay()">Close</button>
   </div>
 </div>
 
 <footer>
-  Find the Chomiks OST - ChomcoOS
+  Find the Chomiks OST - Chomco OS
 </footer>
 
 <div id="musicToggle" onclick="toggleMusic()">Unmute Music</div>
@@ -258,17 +267,18 @@
   function renderArticles(filtered = articles) {
     const container = document.getElementById("articles");
     container.innerHTML = "";
-    filtered.forEach(article => {
+    filtered.forEach((article, index) => {
       const div = document.createElement("div");
       div.className = "card";
-      div.innerHTML = `<h3 onclick="openArticle('${article.title}','${article.content}')" style='cursor:pointer'>${article.title}</h3><p>${article.content}</p>`;
+      div.innerHTML = `<h3 onclick='openArticlePage(${index})' style='cursor:pointer'>${article.title}</h3><p>${article.content.substring(0,100)}...</p>`;
       container.appendChild(div);
     });
   }
 
-  function openArticle(title, content) {
-    document.getElementById("overlayTitle").innerText = title;
-    document.getElementById("overlayContent").innerText = content;
+  function openArticlePage(index) {
+    const article = articles[index];
+    document.getElementById("overlayTitle").innerText = article.title;
+    document.getElementById("overlayContent").innerHTML = article.content.replace(/\n/g,'<br>');
     document.getElementById("overlay").style.display = "flex";
     document.getElementById("openSound").play();
   }
